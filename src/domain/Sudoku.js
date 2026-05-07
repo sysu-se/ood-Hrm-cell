@@ -51,8 +51,6 @@ export class Sudoku {
    */
 guess(move) {
   const { row, col, value } = move;
-  console.log('guess called:', { row, col, value, currentValue: this._grid[row][col] });
-  // 边界检查
   if (row < 0 || row > 8 || col < 0 || col > 8) {
     return false;  
   }
@@ -71,12 +69,13 @@ guess(move) {
   if (typeof value !== 'number' || !Number.isInteger(value) || value < 1 || value > 9) {
     return false;
   }
-
+/** 
+ * 为了让冲突数字在UI显示并红色高亮，这里把冲突检查注释掉，交由UI层的invalidCells自动扫描并标红。
   // 冲突检查
   if (!this.isValid(row, col, value)) {
     return false;
   }
-  
+*/
   this._grid[row][col] = value;
   return true;
 }
@@ -101,7 +100,49 @@ guess(move) {
     }
     return true;
   }
+// --- 新增：提示功能相关 ---
 
+  /**
+   * 内容1：获取某个格子的所有合法候选数
+   * @param {number} row 
+   * @param {number} col 
+   * @returns {number[]} 候选数数组，例如 [1, 4, 7]
+   */
+  getCandidates(row, col) {
+    // 如果已经是固定格，或者已经填了非0的数字，没有候选数
+    if (this._givens[row][col] || this._grid[row][col] !== 0) {
+      return [];
+    }
+
+    const candidates = [];
+    // 遍历1-9，利用现有的 isValid 检查是否合法
+    for (let value = 1; value <= 9; value++) {
+      if (this.isValid(row, col, value)) {
+        candidates.push(value);
+      }
+    }
+    return candidates;
+  }
+
+  /**
+   * 内容2：获取下一步提示（找出有唯一候选数的格子）
+   * @returns {{row: number, col: number, value: number} | null}
+   */
+  getNextHint() {
+    for (let row = 0; row < 9; row++) {
+      for (let col = 0; col < 9; col++) {
+        // 只检查空格子
+        if (this._grid[row][col] === 0) {
+          const candidates = this.getCandidates(row, col);
+          // 如果只有唯一候选数，这就是一个完美的推定值
+          if (candidates.length === 1) {
+            return { row, col, value: candidates[0] };
+          }
+        }
+      }
+    }
+    return null; // 如果全盘都没有唯一解的格子，返回 null（暗示需要进入探索模式）
+  }
   /** 深拷贝当前Sudoku对象 */
   clone() {
     //传入当前的 _givens，保持固定格标记不变
