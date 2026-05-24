@@ -15,6 +15,9 @@
 	export let selected;
 	export let sameArea;
 	export let sameNumber;
+	export let highlightTarget = false;
+	export let highlightRelated = false;
+	export let highlightExcluded = false;
 
 	const borderRight = (cellX !== SUDOKU_SIZE && cellX % 3 !== 0);
 	const borderRightBold = (cellX !== SUDOKU_SIZE && cellX % 3 === 0);
@@ -34,7 +37,10 @@
 		     class:selected={selected}
 		     class:same-area={sameArea}
 		     class:same-number={sameNumber}
-		     class:conflicting-number={conflictingNumber}>
+		     class:conflicting-number={conflictingNumber}
+			     class:highlight-target={highlightTarget}
+			     class:highlight-related={highlightRelated}
+			     class:highlight-excluded={highlightExcluded}>
 
 			<button class="cell-btn" on:click={cursor.set(cellX - 1, cellY - 1)}>
 				{#if candidates}
@@ -118,5 +124,17 @@
 
 	.conflicting-number {
 		@apply text-red-600;
+	}
+
+	.highlight-target {
+		@apply ring-2 ring-green-500 bg-green-50;
+	}
+
+	.highlight-related {
+		@apply ring-2 ring-blue-400 bg-blue-50;
+	}
+
+	.highlight-excluded {
+		@apply bg-red-100 opacity-60;
 	}
 </style>

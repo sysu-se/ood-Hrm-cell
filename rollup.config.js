@@ -17,7 +17,7 @@ const preprocess = sveltePreprocess({
 			require('postcss-import'),
 			require('tailwindcss'),
 			require('autoprefixer'),
-			...(production ? [require('postcss-clean')] : []),
+			...(production ? [require('cssnano')] : []),
 		],
 	},
 	defaults: {

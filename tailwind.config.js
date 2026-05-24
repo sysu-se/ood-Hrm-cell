@@ -25,7 +25,8 @@ module.exports = {
         '-10': '-10',
       },
       boxShadow: {
-        'outline-inverse': '0 0 0 3px rgba(235, 248, 255, 0.5)',
+        'outline': '0 0 0 3px rgba(66, 153, 225, 0.5)',
+	        'outline-inverse': '0 0 0 3px rgba(235, 248, 255, 0.5)',
       }
     },
   },

@@ -5,6 +5,7 @@
 	import { settings } from '@sudoku/stores/settings';
 	import { cursor } from '@sudoku/stores/cursor';
 	import { candidates } from '@sudoku/stores/candidates';
+	import { highlight } from '@sudoku/stores/highlight';
 	import Cell from './Cell.svelte';
 
 	function isSelected(cursorStore, x, y) {
@@ -48,7 +49,10 @@
 					      userNumber={!grid.isGiven(x, y) && value !== 0}
 					      sameArea={$settings.highlightCells && !isSelected($cursor, x, y) && isSameArea($cursor, x, y)}
 					      sameNumber={$settings.highlightSame && value && !isSelected($cursor, x, y) && getValueAtCursor($userGrid, $cursor) === value}
-						  conflictingNumber={$settings.highlightConflicting && !grid.isGiven(x, y) && $invalidCells.includes(x + ',' + y)} />
+						  conflictingNumber={$settings.highlightConflicting && !grid.isGiven(x, y) && $invalidCells.includes(x + ',' + y)}
+							  highlightTarget={$highlight && $highlight.target && $highlight.target.row === y && $highlight.target.col === x}
+							  highlightRelated={$highlight && $highlight.related && $highlight.related.some(c => c.row === y && c.col === x)}
+							  highlightExcluded={$highlight && $highlight.excluded && $highlight.excluded.some(c => c.row === y && c.col === x)} />
 				{/each}
 			{/each}
 
